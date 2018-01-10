@@ -8,6 +8,10 @@ uses
   ExtCtrls, IDSocketHandle,  IdGlobal;
 
 type
+  TSensors=packed record
+
+  end;
+
   TfrmUdp = class(TForm)
     udp: TIdUDPServer;
     btnStartStop: TButton;
@@ -84,7 +88,8 @@ begin
   End;
   poi:=bdata;
   P:=poi;
-  k:=p[10];
+  k:=p[8];
+
 end;
 
 
