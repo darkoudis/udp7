@@ -5,31 +5,48 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, IdBaseComponent, IdComponent, IdUDPBase, IdUDPServer, StdCtrls,
-  ExtCtrls, IDSocketHandle,  IdGlobal;
+  ExtCtrls, IDSocketHandle,  IdGlobal,Math;
 
 type
   TSensors=packed record
-
+    AccX,AccY,AccZ,
+    GraX,GraY,GraZ,
+    RotX,RotY,RotZ,
+    OriX,OriY,OriZ:Single;
   end;
+  PSensors=^TSensors;
+
+{  X Acceleration, Y Acceleration, Z Acceleration,
+  X Gravity, Y Gravity, Z Gravity,
+  X Rotation Rate, Y Rotation Rate, Z Rotation Rate,
+  X Orientation (Azimuth), Y Orientation (Pitch), Z Orientation (Roll),
+  deprecated, deprecated, Ambient Light, Proximity, Keyboard Buttons 1 - 8]}
 
   TfrmUdp = class(TForm)
     udp: TIdUDPServer;
     btnStartStop: TButton;
     Panel1: TPanel;
     Panel2: TPanel;
-    Button1: TButton;
+    pnlAcc: TPanel;
+    pnlGra: TPanel;
+    pnlMaxAcc: TPanel;
+    pnlMinAcc: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Panel3: TPanel;
     procedure btnStartStopClick(Sender: TObject);
     procedure udpUDPException(AThread: TIdUDPListenerThread; ABinding: TIdSocketHandle; const AMessage: String;  const AExceptionClass: TClass);
     procedure udpUDPRead(AThread: TIdUDPListenerThread; AData: TIdBytes; ABinding: TIdSocketHandle);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
     ReadCount:Integer;
     T1,T2,sumLatency,LastLatency:Cardinal;
     BData:TIdBytes;
+    accMax,accMin,RotMax,RotMin:Single;
+    Procedure ReadData;
   end;
 
 var
@@ -86,10 +103,7 @@ begin
     J:=(i div 4)*4+(3-(i mod 4));
     BData[i]:=Adata[j];
   End;
-  poi:=bdata;
-  P:=poi;
-  k:=p[8];
-
+  ReadData;
 end;
 
 
@@ -101,27 +115,42 @@ begin
   SetLength(BData,0);
 end;
 
-procedure TfrmUdp.Button1Click(Sender: TObject);
-var
-  adata:TIdBytes;
-  poi:Pointer;
-  p:^Single;
+procedure TfrmUdp.ReadData;
+Var
+  p:PSensors;
+  str:String;
+  x:Single;
 begin
-  SetLength(adata,4);
-  adata[0]:=66;
-  adata[1]:=137;
-  adata[2]:=207;
-  adata[3]:=81;
-  poi:=Adata;
-  p:=poi;
+  P:=Pointer(BData);
+  Str:=floattostr(round(p.AccX*100)/100)+' - '+floattostr(round(p.AccY*100)/100)+' - '+floattostr(round(p.AccZ*100)/100);
+  If pnlAcc.Caption<>Str then
+    pnlAcc.Caption:=Str;
+  accmax:=max(accmax,p.AccX);  accmax:=max(accmax,p.AccY);  accmax:=max(accmax,p.AccZ);
+  accMin:=min(accMin,p.AccX);  accMin:=min(accmin,p.AccY);  accMin:=min(accmin,p.AccZ);
+  pnlMinAcc.Caption:=floattostr(round(AccMin*100)/100);
+  pnlMaxAcc.Caption:=floattostr(round(AccMax*100)/100);
+  Panel3.Width:=round((3+p.AccX)*100);
 
-  adata[3]:=66;
-  adata[2]:=137;
-  adata[1]:=207;
-  adata[0]:=81;
-  poi:=Adata;
-  p:=poi;
-  
+  Str:=floattostr(round(p.GraX*100)/100)+' | '+floattostr(round(p.GraY*100)/100)+' | '+floattostr(round(p.GraZ*100)/100);
+  If pnlGra.Caption<>Str then
+    pnlGra.Caption:=Str;
+
+
+  x:=round(p.Accz*100);
+  Canvas.Pen.Color:=clRed;
+  canvas.MoveTo(0,200);
+  Canvas.LineTo(400,200);
+
+  Canvas.Pen.Color:=clYellow;
+  canvas.MoveTo(200,200);
+  Canvas.LineTo(200+round(x),200);
+
+  Canvas.Pen.Color:=clBlack;
+  canvas.MoveTo(199,200);
+  Canvas.LineTo(201,200);
+
+
+
 end;
 
 end.

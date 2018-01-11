@@ -1,8 +1,8 @@
 object frmUdp: TfrmUdp
-  Left = 308
-  Top = 183
-  Width = 592
-  Height = 487
+  Left = 342
+  Top = 166
+  Width = 700
+  Height = 645
   Caption = 'frmUdp'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,6 +15,20 @@ object frmUdp: TfrmUdp
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 32
+    Top = 80
+    Width = 18
+    Height = 13
+    Caption = 'acc'
+  end
+  object Label2: TLabel
+    Left = 32
+    Top = 124
+    Width = 15
+    Height = 13
+    Caption = 'gra'
+  end
   object btnStartStop: TButton
     Left = 16
     Top = 8
@@ -40,14 +54,42 @@ object frmUdp: TfrmUdp
     Caption = 'Panel2'
     TabOrder = 2
   end
-  object Button1: TButton
-    Left = 324
-    Top = 88
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
+  object pnlAcc: TPanel
+    Left = 104
+    Top = 64
+    Width = 181
+    Height = 41
+    Caption = 'pnlAcc'
     TabOrder = 3
-    OnClick = Button1Click
+  end
+  object pnlGra: TPanel
+    Left = 104
+    Top = 108
+    Width = 181
+    Height = 41
+    TabOrder = 4
+  end
+  object pnlMaxAcc: TPanel
+    Left = 288
+    Top = 64
+    Width = 49
+    Height = 41
+    TabOrder = 5
+  end
+  object pnlMinAcc: TPanel
+    Left = 52
+    Top = 64
+    Width = 49
+    Height = 41
+    TabOrder = 6
+  end
+  object Panel3: TPanel
+    Left = 408
+    Top = 16
+    Width = 61
+    Height = 41
+    Caption = 'Panel3'
+    TabOrder = 7
   end
   object udp: TIdUDPServer
     Bindings = <
